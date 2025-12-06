@@ -1,0 +1,1324 @@
+/* ========== RESET DE BASE ========== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  background-color: #f2f2f2; /* gris clair élégant */
+  color: #111;
+}
+
+/* Conteneur global optionnel */
+body {
+  line-height: 1.5;
+}
+
+/* ========== NAVBAR TRANSPARENTE ========== */
+
+.wakelni-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  background: transparent;
+  padding: 16px 40px;
+  pointer-events: none;
+}
+
+.wakelni-header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Logo Wakelni */
+.wakelni-header .logo a {
+  font-weight: 800;
+  font-size: 1.6rem;
+  text-decoration: none;
+  color: #ffdf6b; /* jaune/orange chaleureux */
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  letter-spacing: 0.05em;
+}
+
+/* liens quand on n'est PAS sur la home */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-links a {
+  color: #ffffff;
+  font-weight: 500;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: opacity 0.2s ease;
+}
+
+.nav-links a:hover {
+  opacity: 0.75;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-info {
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+
+.logout-btn {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: none;
+  background-color: #ffffff;
+  color: #c1121f;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.05s ease;
+}
+
+.logout-btn:hover {
+  background-color: #ffe4e4;
+}
+
+.logout-btn:active {
+  transform: scale(0.97);
+}
+
+/* ========== HERO FULL WIDTH ========== */
+
+.hero {
+  position: relative;
+  width: 100%;
+  height: 70vh;
+  margin-bottom: 32px;
+
+  background-image:
+    linear-gradient(to right, rgba(0, 0, 0, 0.68), rgba(0, 0, 0, 0.3)),
+    url('https://img.freepik.com/premium-photo/shakshuka-frying-pan_266870-8655.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 80px 60px;
+  color: #fff;
+}
+
+.hero-text {
+  max-width: 650px;
+}
+
+.hero-text h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.hero-text p {
+  font-size: 1.05rem;
+  margin-bottom: 14px;
+  line-height: 1.6;
+}
+
+.hero-buttons {
+  margin-top: 20px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.hero-subtext {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+/* ========== BOUTONS GÉNÉRIQUES ========== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 22px;
+  border-radius: 999px;
+  border: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+  opacity: 0.95;
+}
+
+/* Client : bouton clair */
+.btn-client {
+  background: #ffffff;
+  color: #c1121f;
+}
+
+/* Cuisinier : bouton rouge/orange */
+.btn-cuisinier {
+  background: #c1121f;
+  color: #ffffff;
+}
+
+/* Connexion : bouton transparent avec bordure blanche */
+.btn-secondary {
+  background: transparent;
+  border: 1px solid #ffffff;
+  color: #ffffff;
+}
+
+/* ========== SECTION AVANTAGES ========== */
+
+.features {
+  max-width: 1100px;
+  margin: 0 auto 32px auto;
+  padding: 0 24px 8px 24px;
+}
+
+.features h2 {
+  font-size: 1.8rem;
+  margin-bottom: 16px;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.feature-card {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid #e2e2e2;
+}
+
+.feature-card h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+
+.feature-card p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+/* ========== SECTION PLATS (si réutilisée ailleurs) ========== */
+
+.plats-section {
+  max-width: 1100px;
+  margin: 0 auto 32px auto;
+  padding: 0 24px;
+}
+
+.plats-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 16px;
+}
+
+/* ========== LOGIN PAGE ========== */
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f5f5f5; /* fond gris clair */
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 32px 28px;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.08);
+}
+
+.login-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.login-label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.login-input {
+  margin-top: 6px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-input:focus {
+  border-color: #d01218; /* rouge Wakelni */
+  box-shadow: 0 0 0 2px rgba(208, 18, 24, 0.15);
+}
+
+.login-submit {
+  margin-top: 8px;
+  padding: 10px 16px;
+  width: 100%;
+  border-radius: 999px;
+  border: none;
+  background-color: #000000;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.05s ease;
+}
+
+.login-submit:hover:not(:disabled) {
+  background-color: #222222;
+}
+
+.login-submit:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.login-submit:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.login-error {
+  color: #d01218;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  margin: 12px 0;
+  color: #888;
+  font-size: 0.8rem;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: #e0e0e0;
+}
+
+.login-divider span {
+  padding: 0 10px;
+}
+
+.login-alt-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.login-alt-btn {
+  width: 100%;
+  padding: 9px 14px;
+  border-radius: 999px;
+  border: 1px solid #ddd;
+  background-color: #ffffff;
+  font-size: 0.9rem;
+  cursor: not-allowed; /* désactivé pour l'instant */
+}
+
+.login-bottom-text {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: #555;
+  text-align: center;
+}
+
+.login-link {
+  color: #d01218;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login-link:hover {
+  text-decoration: underline;
+}
+
+/* ========== DASHBOARD CUISINIER ========== */
+
+.cuisinier-dashboard {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 16px 24px;
+}
+
+.cuisinier-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.cuisinier-header h1 {
+  margin: 0 0 12px 0;
+}
+
+.cuisinier-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.cuisinier-header-actions {
+  margin-top: 6px;     /* léger décalage vers le bas */
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.cuisinier-section {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.plats-table {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.plat-row {
+  display: flex;
+  align-items: flex-start;
+  /*display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #eee;*/
+}
+
+.plat-info h3 {
+  margin: 0 0 4px 0;
+}
+
+.plat-meta {
+  margin: 4px 0 0 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.plat-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 160px;
+  align-items: flex-end;
+}
+
+.badge-active {
+  color: #0d7a34;
+  font-weight: 600;
+}
+
+.badge-inactive {
+  color: #b20000;
+  font-weight: 600;
+}
+
+.account-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+/* Petits boutons utilitaires (dashboard, etc.) */
+.btn-primary {
+  background: #d1111b;
+  color: white;
+}
+
+.btn-danger {
+  background: #b00020;
+  color: white;
+}
+
+.btn-secondary-light {
+  background: #f0f0f0;
+  color: #111;
+}
+
+/* ========== RESPONSIVE ========== */
+
+@media (max-width: 900px) {
+  .hero {
+    height: 60vh;
+  }
+
+  .hero-content {
+    padding: 80px 24px 40px 24px;
+  }
+
+  .hero-text h1 {
+    font-size: 2.3rem;
+  }
+
+  /*.wakelni-header {
+    padding: 12px 20px;
+  }*/
+}
+
+@media (max-width: 600px) {
+  .hero-buttons {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cuisinier-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+/* --- avatar dans la navbar --- */
+
+.user-avatar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-avatar-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.user-avatar-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.user-avatar-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.user-avatar-role {
+  font-size: 0.75rem;
+  color: #f1f5f9;
+}
+
+/* --- header du dashboard cuisinier : onglets clairs --- */
+
+.cuisinier-header-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.cuisinier-header-actions .header-tab {
+  background: #f9f5f5;
+  border-radius: 999px;
+  border: 1px solid #f0e0e0;
+  color: #7a3b3b;
+  padding-inline: 18px;
+}
+
+.cuisinier-header-actions .header-tab:hover {
+  background: #fff3f3;
+}
+
+/* bouton + Ajouter un plat mis en avant */
+.cuisinier-header-actions .header-add-plat {
+  background: #e63946;
+  border-color: #e63946;
+  color: #ffffff;
+}
+
+/* --- vignette photo plat dans la liste --- */
+
+
+.plat-thumb {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  margin-right: 12px;
+}
+
+.plat-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ==== Page ajout de plat ==== */
+
+.plat-form-page {
+  max-width: 700px;
+  margin: 80px auto 40px auto;  /* centré avec espace sous la navbar */
+  padding: 0 24px;
+}
+
+.plat-form-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px 24px 28px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.plat-form-title {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.9rem;
+}
+
+/* grille du formulaire */
+.plat-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.plat-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.plat-form-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.plat-form-input,
+.plat-form-textarea {
+  width: 100%;
+  padding: 9px 11px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background-color: #fafafa;
+}
+
+.plat-form-input:focus,
+.plat-form-textarea:focus {
+  border-color: #e63946;
+  box-shadow: 0 0 0 2px rgba(230, 57, 70, 0.15);
+  background-color: #ffffff;
+}
+
+.plat-form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.plat-form-submit {
+  margin-top: 12px;
+  width: 100%;
+}
+
+/* messages */
+.error-text {
+  color: #b00020;
+  font-size: 0.9rem;
+}
+
+.success-text {
+  color: #0d7a34;
+  font-size: 0.9rem;
+}
+
+/* ========= PAGE CLIENT AVEC HERO ========= */
+
+.client-page {
+  background-color: #f4f4f4;
+}
+
+/* HERO */
+
+.client-hero {
+  position: relative;
+  width: 100%;
+  height: 55vh;
+  min-height: 320px;
+  background-image:
+    linear-gradient(to right, rgba(0,0,0,0.65), rgba(0,0,0,0.15)),
+    url('https://img.freepik.com/premium-photo/shakshuka-frying-pan_266870-8655.jpg');
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+  z-index: 2;
+}
+
+.client-hero-overlay {
+  height: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px 32px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  z-index: 1; /* au-dessus du fond */
+}
+
+.client-hero-content {
+  position: relative;
+  z-index: 2; /* au-dessus de tout le reste dans le hero */
+  max-width: 520px;
+}
+
+.client-hero-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  opacity: 0.9;
+  margin: 0 0 8px 0;
+}
+
+.client-hero-title {
+  font-size: 2.6rem;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+}
+
+.client-hero-subtitle {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  opacity: 0.95;
+}
+
+.client-hero-buttons {
+  margin-top: 20px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.client-hero-buttons button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 22px;
+  border-radius: 999px;      /* forme pilule */
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  border: 2px solid #ffffff;   /* bordure blanche */
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.05s ease,
+    box-shadow 0.15s ease;
+}
+
+.client-hero-buttons button:hover {
+  background: rgba(255,255,255,0.12); /* léger hover */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+}
+
+.client-hero-buttons button:active {
+  transform: scale(0.97);
+}
+
+
+/* boutons du hero */
+
+
+/* bouton jaune principal 
+.hero-btn-primary {
+  background: #ffc738;
+  color: #222;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+}
+
+.hero-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.3);
+} */
+
+/* boutons secondaires style pilule bordure blanche */
+.hero-btn-secondary {
+  background: transparent;
+  border: 1px solid #ffffff;
+  color: #ffffff;
+}
+
+.hero-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+/* Carte compte en haut à droite du hero */
+
+.client-hero {
+  position: relative;
+  width: 100%;
+  height: 55vh;
+  min-height: 320px;
+  background-image:
+    linear-gradient(to right, rgba(0,0,0,0.65), rgba(0,0,0,0.15)),
+    url('https://img.freepik.com/premium-photo/shakshuka-frying-pan_266870-8655.jpg');
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+  z-index: 0; /* la base */
+}
+
+.client-hero-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ff8c42;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.client-hero-account-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.client-hero-account-card {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 3; /* au-dessus du texte et des boutons */
+  background: rgba(255,255,255,0.95);
+  color: #222;
+  border-radius: 999px;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.client-hero-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.client-hero-role {
+  font-size: 0.75rem;
+  color: #777;
+}
+
+.client-hero-logout {
+  border-radius: 999px;
+  padding: 6px 10px;
+  border: none;
+  background: #b00020;
+  color: white;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+/* ========= CONTENU PRINCIPAL ========= */
+
+.client-main-layout {
+  max-width: 1200px;
+  margin: 24px auto 40px; 
+  padding: 0 24px;
+  display: flex;
+  gap: 24px;
+}
+
+.client-main-column {
+  flex: 3;
+  background: #fafafa;
+  border-radius: 16px;
+  padding: 18px 18px 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+}
+
+.client-section-title {
+  font-size: 1.4rem;
+  margin: 0 0 4px 0;
+}
+
+.client-section-subtitle {
+  margin: 0 0 16px 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Sidebar */
+
+.client-sidebar {
+  flex: 1.4;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.client-sidebar-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 14px 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+}
+
+.client-sidebar-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 1rem;
+}
+
+.client-sidebar-card ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.client-sidebar-card li + li {
+  margin-top: 6px;
+}
+
+.client-sidebar-card button {
+  width: 100%;
+  text-align: left;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: none;
+  background: #f5f5f5;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+/* ========= CARTES PLATS ========= */
+
+.plat-grid-client {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+  margin-top: 8px;
+}
+
+.plat-card-client {
+  background: #ffffff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+}
+
+.plat-client-image-wrapper {
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+}
+
+.plat-client-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.plat-client-image.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f3f3;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.plat-client-body {
+  padding: 12px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.plat-client-chef {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chef-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ff8c42;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.chef-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.chef-location {
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.plat-client-title {
+  margin: 4px 0 0 0;
+  font-size: 1.05rem;
+}
+
+.plat-client-description {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.plat-client-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  margin-top: 2px;
+}
+
+.plat-price {
+  font-weight: 700;
+  color: #b00020;
+}
+
+.plat-stock {
+  color: #555;
+}
+
+/* rating */
+
+.plat-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.star-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 17px;
+  line-height: 1;
+  padding: 0;
+  color: #ccc;
+}
+
+.star-btn.filled {
+  color: #ffc738;
+}
+
+.rating-text {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+/* commentaire */
+
+.plat-comment-input {
+  margin-top: 4px;
+  width: 100%;
+  min-height: 60px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  padding: 6px 8px;
+  font-size: 0.85rem;
+}
+
+/* bouton panier */
+
+.client-add-cart-btn {
+  margin-top: 6px;
+  width: 100%;
+}
+
+/* responsive rapide */
+
+@media (max-width: 900px) {
+  .client-main-layout {
+    flex-direction: column;
+    margin-top: -24px;
+  }
+}
+
+
+
+.wakelni-header-inner,
+.wakelni-header a,
+.wakelni-header button {
+  pointer-events: auto;
+}
+
+.hero-btn-primary,
+.hero-btn-secondary,
+.client-hero-logout {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* ====== SECTION PANIER CLIENT ====== */
+
+.client-cart-section {
+  margin-top: 24px;
+  padding-top: 8px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.client-cart-empty {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 8px;
+}
+
+/* Liste des lignes du panier */
+.client-cart-items {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Carte d’un plat dans le panier */
+.client-cart-item {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+}
+
+/* Mini vignette image */
+.client-cart-thumb {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #f3f3f3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Image réelle (class utilisée dans le TSX) */
+.thumb-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Placeholder si pas de photo */
+.thumb-placeholder {
+  font-weight: 700;
+  color: #999;
+  font-size: 1rem;
+}
+
+/* Infos texte du plat */
+.client-cart-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.client-cart-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.client-cart-plat-name {
+  font-weight: 600;
+}
+
+.client-cart-plat-price {
+  font-weight: 700;
+  color: #b00020;
+}
+
+/* Quantité + sous-total */
+.client-cart-meta {
+  font-size: 0.8rem;
+  color: #666;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Bouton “Retirer” */
+.client-cart-remove {
+  border: none;
+  background: #ffe4e4;
+  color: #b00020;
+  font-size: 0.8rem;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.client-cart-remove:hover {
+  background: #ffd4d4;
+}
+
+/* Pied de carte : total + bouton Commander */
+.client-cart-footer {
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.client-cart-total {
+  font-size: 1rem;
+}
+
+.client-cart-checkout {
+  min-width: 130px;
+}
+
+.client-cart-qty {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f5f5f5;
+  border-radius: 999px;
+  padding: 3px 8px;
+}
+
+.client-cart-qty button {
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.client-cart-qty span {
+  font-size: 0.9rem;
+  min-width: 16px;
+  text-align: center;
+}
+
+/* paiement*/
+.payment-card {
+  margin-top: 16px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px 18px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card-element-wrapper {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #fafafa;
+}
+
+.payment-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+}
+
+/* contrôle quantité dans le récap */
+.qty-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f5f5f5;
+  padding: 4px 8px;
+  border-radius: 999px;
+}
+
+.qty-btn {
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.qty-value {
+  min-width: 18px;
+  text-align: center;
+  font-weight: 600;
+}
+
