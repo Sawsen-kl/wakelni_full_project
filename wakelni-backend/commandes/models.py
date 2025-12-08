@@ -8,17 +8,23 @@ from plats.models import Plat
 
 
 class Commande(models.Model):
+    # nouveaux statuts (ceux de ton UML)
+    STATUT_EN_ATTENTE = "EN_ATTENTE"
     STATUT_EN_PREPARATION = "EN_PREPARATION"
-    STATUT_EN_LIVRAISON = "EN_LIVRAISON"
-    STATUT_LIVREE = "LIVREE"
+    STATUT_PRET = "PRET"
+    STATUT_REMIS = "REMIS"
+    STATUT_COMPLETEE = "COMPLETEE"
+    STATUT_ANNULEE = "ANNULEE"
 
     STATUT_CHOICES = [
-        (STATUT_EN_PREPARATION, "En cours de préparation"),
-        (STATUT_EN_LIVRAISON, "En cours de livraison"),
-        (STATUT_LIVREE, "Livrée"),
+        (STATUT_EN_ATTENTE, "En attente"),
+        (STATUT_EN_PREPARATION, "En préparation"),
+        (STATUT_PRET, "Prêt"),
+        (STATUT_REMIS, "Remis"),
+        (STATUT_COMPLETEE, "Complétée"),
+        (STATUT_ANNULEE, "Annulée"),
     ]
 
-    # ⚠️ ON NE DÉCLARE PLUS id : Django va créer tout seul
     client = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -30,7 +36,7 @@ class Commande(models.Model):
     statut = models.CharField(
         max_length=20,
         choices=STATUT_CHOICES,
-        default=STATUT_EN_PREPARATION,
+        default=STATUT_EN_ATTENTE,   # ou EN_PREPARATION si tu préfères
     )
 
     total = models.DecimalField(max_digits=8, decimal_places=2)

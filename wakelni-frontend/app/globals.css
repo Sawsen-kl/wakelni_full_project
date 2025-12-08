@@ -28,17 +28,17 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 10;
+  z-index: 1000;
   background: transparent;
   padding: 16px 40px;
   pointer-events: none;
-}
+} 
 
 .wakelni-header-inner {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
+} 
 
 /* Logo Wakelni */
 .wakelni-header .logo a {
@@ -392,6 +392,8 @@ body {
 .cuisinier-dashboard {
   max-width: 1100px;
   margin: 40px auto;
+  padding: 16px 24px;
+  margin: 90px auto 40px auto;  /* plus bas sous la navbar */
   padding: 16px 24px;
 }
 

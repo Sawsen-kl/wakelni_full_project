@@ -1,4 +1,3 @@
-// app/components/NavBar.tsx (ou où est ton composant)
 'use client';
 
 import Link from 'next/link';
@@ -8,12 +7,15 @@ import { usePathname, useRouter } from 'next/navigation';
 export default function NavBar() {
   const [username, setUsername] = useState<string | null>(null);
   const [role, setRole] = useState<string | null>(null);
+
   const pathname = usePathname();
   const router = useRouter();
 
-  // true si on est dans un espace “dashboard”
+  const isHome = pathname === '/';
   const isDashboard =
     pathname.startsWith('/client') || pathname.startsWith('/cuisinier');
+  const isAuthPage =
+    pathname === '/login' || pathname.startsWith('/register');
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -23,15 +25,24 @@ export default function NavBar() {
 
     setUsername(storedUsername);
     setRole(storedRole);
+
+    if (!storedUsername && !pathname.startsWith('/login') && !pathname.startsWith('/register')) {
+      router.push('/');
+      }
   }, []);
 
   const handleLogout = () => {
     if (typeof window === 'undefined') return;
+
     window.localStorage.removeItem('accessToken');
     window.localStorage.removeItem('refreshToken');
     window.localStorage.removeItem('username');
     window.localStorage.removeItem('email');
     window.localStorage.removeItem('role');
+
+    setUsername(null);
+    setRole(null);
+
     router.push('/');
   };
 
@@ -45,41 +56,43 @@ export default function NavBar() {
           <Link href="/">Wakelni</Link>
         </div>
 
-        {/* Liens de navigation : seulement si on N'EST PAS sur /client ou /cuisinier */}
-        {!isDashboard && (
-          <>
-            <nav className="nav-links">
-              <Link href="/plats">Plats</Link>
+        {/* Liens de navigation :
+            - pas sur /client ni /cuisinier
+            - pas sur /login ni /register
+        */}
+        {!isDashboard && !isAuthPage && (
+          <nav className="nav-links">
+            {/* Lien Plats : pas sur la home */}
+            {!isHome && <Link href="/plats">Plats</Link>}
 
-              {/* Pas connecté → Inscription / Connexion */}
-              {!isLoggedIn && (
-                <>
-                  <Link href="/register/client">Inscription</Link>
-                  <Link href="/login">Connexion</Link>
-                </>
-              )}
+            {/* Pas connecté : n'affiche rien */}
+            {!isLoggedIn && null}
+            
 
-              {/* Connecté + cuisinier → lien tableau de bord */}
-              {isLoggedIn && role === 'CUISINIER' && (
-                <Link href="/cuisinier">Tableau de bord</Link>
-              )}
-            </nav>
-
-            {/* Zone droite (info user + déconnexion) aussi seulement hors dashboards */}
-            <div className="nav-right">
-              {isLoggedIn && !isDashboard && (
-                <>
-                  <span className="user-info">
-                    Connecté : {username} ({role || 'CLIENT'})
-                  </span>
-                  <button className="logout-btn" onClick={handleLogout}>
-                    Déconnexion
-                  </button>
-                </>
-              )}
-            </div>
-          </>
+            {/* Connecté + cuisinier → lien Tableau de bord (pas sur la home) */}
+            {isLoggedIn && role === 'CUISINIER' && !isHome && (
+              <Link href="/cuisinier">Tableau de bord</Link>
+            )}
+          </nav>
         )}
+
+        {/* Zone droite (texte "Connecté : ...") :
+            - pas sur la home
+            - pas sur /client, /cuisinier
+            - pas sur /login, /register
+        */}
+        <div className="nav-right">
+          {isLoggedIn && !isHome && !isDashboard && !isAuthPage && (
+            <>
+              <span className="user-info">
+                Connecté : {username} ({role || 'CLIENT'})
+              </span>
+              <button className="logout-btn" onClick={handleLogout}>
+                Déconnexion
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </header>
   );

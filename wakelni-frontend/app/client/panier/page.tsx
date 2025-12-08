@@ -156,6 +156,20 @@ export default function PanierPage() {
     return <p style={{ padding: 24 }}>Vérification de la connexion...</p>;
   }
 
+
+  async function handleViderPanier() {
+  if (!confirm("Voulez-vous vraiment vider votre panier ?")) return;
+
+  try {
+    await apiDelete('/api/paniers/vider/');
+    await loadPanier();
+  } catch (err: any) {
+    console.error(err);
+    alert(err.message || "Erreur lors du vidage du panier.");
+  }
+}
+
+
   return (
     <div className="client-page">
       {/* ===== HERO ===== */}
@@ -180,10 +194,10 @@ export default function PanierPage() {
               <button
                 type="button"
                 className="hero-btn-secondary"
-                onClick={handleCommander}
-                disabled={!panier || panier.lignes.length === 0 || processingCheckout}
+                onClick={() => router.push('/client/commandes')}
+                disabled={!panier || panier.lignes.length === 0}
               >
-                {processingCheckout ? 'Traitement...' : 'Commander'}
+                Mes Commandes
               </button>
             </div>
           </div>
@@ -314,6 +328,13 @@ export default function PanierPage() {
                   <div className="client-cart-total">
                     Total : <strong>{formatPrice(panier.total)} $</strong>
                   </div>
+                  <button
+                    type="button"
+                    className="btn btn-primary client-cart-checkout"
+                    onClick={handleViderPanier}
+                  >
+                    Vider le panier
+                  </button>
                   <button
                     type="button"
                     className="btn btn-primary client-cart-checkout"

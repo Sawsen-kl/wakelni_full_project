@@ -29,7 +29,6 @@ class MonPanierView(APIView):
 
     def get(self, request):
         panier = get_or_create_panier_courant(request.user)
-        # 🔴 important : on passe le request dans le context
         serializer = PanierSerializer(panier, context={"request": request})
         return Response(serializer.data)
 
@@ -65,6 +64,21 @@ class AjouterAuPanierView(APIView):
 
         if plat.stock <= 0:
             raise ValidationError({"plat_id": "Ce plat est en rupture de stock."})
+
+        # 🔒 RÈGLE : un seul cuisinier par panier
+        # S'il y a déjà des lignes, on vérifie que le nouveau plat vient du même cuisinier
+        premiere_ligne = panier.lignes.select_related("plat__cuisinier").first()
+        if premiere_ligne:
+            cuisinier_existant = premiere_ligne.plat.cuisinier
+            if plat.cuisinier_id != cuisinier_existant.id:
+                raise ValidationError(
+                    {
+                        "detail": (
+                            "Vous ne pouvez commander qu'auprès d'un seul cuisinier à la fois. "
+                            "Validez ou videz votre panier avant de choisir un autre cuisinier."
+                        )
+                    }
+                )
 
         # on vérifie qu'on ne dépasse pas le stock
         item, created = LignePanier.objects.get_or_create(
@@ -144,5 +158,20 @@ class SupprimerItemView(APIView):
 
         item.delete()
 
+        serializer = PanierSerializer(panier, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ViderPanierView(APIView):
+    """
+    DELETE /api/paniers/vider/
+    -> Supprime toutes les lignes du panier courant.
+    """
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request):
+        panier = get_or_create_panier_courant(request.user)
+        panier.lignes.all().delete()
         serializer = PanierSerializer(panier, context={"request": request})
         return Response(serializer.data, status=status.HTTP_200_OK)

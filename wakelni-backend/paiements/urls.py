@@ -1,12 +1,7 @@
-# paiements/urls.py
 from django.urls import path
-
-from .views import CreateCheckoutSessionView
+from .views import CreateCheckoutSessionView, ConfirmPaymentView
 
 urlpatterns = [
-    path(
-        "create-checkout-session/",
-        CreateCheckoutSessionView.as_view(),
-        name="create-checkout-session",
-    ),
+    path("create-checkout-session/", CreateCheckoutSessionView.as_view()),
+    path("confirm/", ConfirmPaymentView.as_view()),
 ]

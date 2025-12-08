@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiGet, apiDelete, apiPost } from '../../lib/api';
 
+
 type Plat = {
   id: string;
   nom: string;
@@ -127,6 +128,7 @@ export default function CuisinierDashboardPage() {
     (firstName || '') + (lastName ? ` ${lastName}` : '') || username || '';
 
   return (
+   
     <div className="cuisinier-dashboard">
       {/* HEADER */}
       <div className="cuisinier-header">
@@ -138,9 +140,14 @@ export default function CuisinierDashboardPage() {
         </div>
 
         <div className="cuisinier-header-actions">
+          {/* Onglets */}
           <button
             className="btn header-tab"
-            onClick={() => document.getElementById('section-compte')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={() =>
+              document
+                .getElementById('section-compte')
+                ?.scrollIntoView({ behavior: 'smooth' })
+            }
           >
             Mon compte
           </button>
@@ -174,6 +181,29 @@ export default function CuisinierDashboardPage() {
           >
             + Ajouter un plat
           </button>
+
+          {/* Carte compte cuisinier (même design que client) */}
+          <div className="client-hero-account-card">
+            <div className="client-hero-avatar">
+              {(firstName || 'U')[0]?.toUpperCase()}
+            </div>
+            <div className="client-hero-account-text">
+              <span className="client-hero-name">
+                {greetingName || 'Compte cuisinier'}
+              </span>
+              <span className="client-hero-role">Compte cuisinier</span>
+            </div>
+            <button
+              onClick={() => {
+                if (typeof window === 'undefined') return;
+                window.localStorage.clear();
+                router.push('/login');
+              }}
+              className="client-hero-logout"
+            >
+              Déconnexion
+            </button>
+          </div>
         </div>
       </div>
 
@@ -291,5 +321,6 @@ export default function CuisinierDashboardPage() {
         </section>
       </div>
     </div>
+    
   );
 }

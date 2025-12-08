@@ -62,3 +62,23 @@ class CommandeSerializer(serializers.ModelSerializer):
         )
 
         return commande
+    
+
+class LigneCommandeClientSerializer(serializers.ModelSerializer):
+    """Ligne de commande vue côté client (nom du plat + quantité + sous-total)."""
+
+    plat_nom = serializers.CharField(source="plat.nom", read_only=True)
+
+    class Meta:
+        model = LigneCommande
+        fields = ("id", "plat_nom", "quantite", "sous_total")
+
+
+class CommandeClientSerializer(serializers.ModelSerializer):
+    """Commande complète pour l'historique du client."""
+
+    lignes = LigneCommandeClientSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Commande
+        fields = ("id", "created_at", "statut", "total", "lignes")

@@ -59,7 +59,7 @@ export default function ClientPage() {
     setCheckingAuth(false);
   }, [router]);
 
-  // 🔄 Charger les plats (actifs)
+  //  Charger les plats (actifs)
   useEffect(() => {
     if (checkingAuth) return;
 
@@ -155,17 +155,11 @@ export default function ClientPage() {
                 Mon panier
               </button>
 
-              <button
-                type="button"
-                className="hero-btn-secondary"
-                onClick={() => {
-                  // plus tard : vraie page /client/favoris
-                  alert('La page "Mes favoris" arrive bientôt 😊');
-                }}
-              >
-                Mes favoris (bientôt)
+              {/* bouton Mes commandes */}
+              <button type="button" className="hero-btn-secondary" onClick={() => router.push("/client/commandes")}>
+                Mes commandes
               </button>
-            </div>
+              </div>
           </div>
 
           {/* Carte compte en haut à droite */}

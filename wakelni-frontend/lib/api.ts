@@ -1,7 +1,7 @@
 // lib/api.ts
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
-// 🔴 utilitaire pour vider le localStorage + rediriger vers /login
+//  utilitaire pour vider le localStorage + rediriger vers /login
 function clearAuthAndRedirect() {
   if (typeof window !== 'undefined') {
     window.localStorage.removeItem('accessToken');
@@ -32,6 +32,7 @@ async function handleResponse(res: Response) {
         lower.includes('credentials were not provided')
       ) {
         clearAuthAndRedirect();
+        throw new Error("Votre session a expiré, veuillez vous reconnecter.");
       }
     } catch {
       // ignore

@@ -5,6 +5,7 @@ from .views import (
     AjouterAuPanierView,
     MettreAJourItemView,
     SupprimerItemView,
+    ViderPanierView,
 )
 
 urlpatterns = [
@@ -22,4 +23,5 @@ urlpatterns = [
         SupprimerItemView.as_view(),
         name="delete-panier-item",
     ),
+    path("vider/", ViderPanierView.as_view()),
 ]
