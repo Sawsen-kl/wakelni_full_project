@@ -29,9 +29,53 @@ type Commande = {
 
 export default function MesCommandesPage() {
   const router = useRouter();
+
+  // 🧑‍💻 Infos user / auth (comme sur paiement)
+  const [firstName, setFirstName] = useState<string | null>(null);
+  const [lastName, setLastName] = useState<string | null>(null);
+  const [role, setRole] = useState<string | null>(null);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
   const [commandes, setCommandes] = useState<Commande[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // 🔐 Vérification auth + rôle client
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const token = window.localStorage.getItem("accessToken");
+    const storedRole = window.localStorage.getItem("role");
+    const storedFirst = window.localStorage.getItem("first_name");
+    const storedLast = window.localStorage.getItem("last_name");
+
+    if (!token) {
+      router.replace("/login");
+      return;
+    }
+
+    // si jamais un cuisinier tombe là, on le renvoie chez lui
+    if (storedRole === "CUISINIER") {
+      router.replace("/cuisinier");
+      return;
+    }
+
+    setFirstName(storedFirst);
+    setLastName(storedLast);
+    setRole(storedRole);
+    setCheckingAuth(false);
+  }, [router]);
+
+  const fullName =
+    `${firstName || ""} ${lastName || ""}`.trim() || "Client Wakelni";
+  const avatarLetter = (firstName?.[0] || fullName[0] || "C").toUpperCase();
+
+  function handleLogout() {
+    if (typeof window !== "undefined") {
+      window.localStorage.clear();
+      window.location.href = "/login";
+    }
+  }
 
   async function loadCommandes() {
     try {
@@ -48,8 +92,10 @@ export default function MesCommandesPage() {
   }
 
   useEffect(() => {
-    loadCommandes();
-  }, []);
+    if (!checkingAuth) {
+      loadCommandes();
+    }
+  }, [checkingAuth]);
 
   function formatDate(iso: string) {
     const d = new Date(iso);
@@ -84,7 +130,6 @@ export default function MesCommandesPage() {
   function classStatut(statut: StatutCommande) {
     switch (statut) {
       case "EN_ATTENTE":
-        return "badge-inactive"; // rouge
       case "ANNULEE":
         return "badge-inactive"; // rouge
       case "EN_PREPARATION":
@@ -135,6 +180,10 @@ export default function MesCommandesPage() {
     }
   }
 
+  if (checkingAuth) {
+    return <p style={{ padding: 24 }}>Vérification de la connexion...</p>;
+  }
+
   return (
     <div className="client-page">
       {/* HERO */}
@@ -148,10 +197,39 @@ export default function MesCommandesPage() {
               remises ou complétées.
             </p>
             <div className="client-hero-buttons">
-              <button onClick={() => router.push("/client")}>
-                Retour aux plats
+              <button
+                type="button"
+                className="hero-btn-secondary"
+                onClick={() => router.push("/client")}
+              >
+                Retour à l&apos;accueil client
+              </button>
+              <button
+                type="button"
+                className="hero-btn-secondary"
+                onClick={() => router.push("/client/panier")}
+              >
+                Voir mon panier
               </button>
             </div>
+          </div>
+
+          {/* 🔸 Carte compte + Déconnexion (comme sur paiement) */}
+          <div className="client-hero-account-card">
+            <div className="client-hero-avatar">{avatarLetter}</div>
+            <div className="client-hero-account-text">
+              <span className="client-hero-name">{fullName}</span>
+              <span className="client-hero-role">
+                {role === "CLIENT" ? "Compte client" : "Utilisateur"}
+              </span>
+            </div>
+            <button
+              type="button"
+              className="client-hero-logout"
+              onClick={handleLogout}
+            >
+              Déconnexion
+            </button>
           </div>
         </div>
       </section>
@@ -215,7 +293,7 @@ export default function MesCommandesPage() {
                   ))}
                 </ul>
 
-                {/* ✅ Boutons d’action */}
+                {/* Boutons d’action */}
                 <div
                   style={{
                     marginTop: 10,
@@ -224,7 +302,7 @@ export default function MesCommandesPage() {
                     gap: 12,
                   }}
                 >
-                  {/* bouton ANNULER visible uniquement si EN_ATTENTE */}
+                  {/* ANNULER visible uniquement si EN_ATTENTE */}
                   {cmd.statut === "EN_ATTENTE" && (
                     <button
                       type="button"
@@ -245,7 +323,7 @@ export default function MesCommandesPage() {
                     </button>
                   )}
 
-                  {/* bouton CONFIRMER visible uniquement si REMIS */}
+                  {/* CONFIRMER visible uniquement si REMIS */}
                   {cmd.statut === "REMIS" && (
                     <button
                       type="button"

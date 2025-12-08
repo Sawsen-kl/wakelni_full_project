@@ -64,3 +64,19 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.set_password(password)  # hash du mot de passe
         user.save()
         return user
+    
+
+class ClientProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "avatar_url",
+            "adresse_principale",
+            "preferences",
+        ]
+        read_only_fields = ["id", "username", "email"]

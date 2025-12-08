@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken  # JWT
+from rest_framework.permissions import IsAuthenticated
+from .serializers import ClientProfileSerializer
 
 from .serializers import (
     UserSerializer,
@@ -127,3 +129,22 @@ class LoginView(APIView):
             },
             status=status.HTTP_200_OK,
         )
+    
+
+class ClientMeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = ClientProfileSerializer(request.user)
+        return Response(serializer.data)
+
+    def patch(self, request):
+        serializer = ClientProfileSerializer(
+            request.user,
+            data=request.data,
+            partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

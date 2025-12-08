@@ -191,13 +191,9 @@ export default function PanierPage() {
               >
                 Continuer mes achats
               </button>
-              <button
-                type="button"
-                className="hero-btn-secondary"
-                onClick={() => router.push('/client/commandes')}
-                disabled={!panier || panier.lignes.length === 0}
-              >
-                Mes Commandes
+              {/* bouton Mes commandes */}
+              <button type="button" className="hero-btn-secondary" onClick={() => router.push("/client/commandes")}>
+                Mes commandes
               </button>
             </div>
           </div>
@@ -350,24 +346,6 @@ export default function PanierPage() {
 
         {/* Sidebar */}
         <aside className="client-sidebar">
-          <div className="client-sidebar-card">
-            <h3>Mon espace</h3>
-            <ul>
-              <li>
-                <button onClick={() => router.push('/profil/client')}>
-                  Profil
-                </button>
-              </li>
-              <li>
-                <button onClick={() => router.push('/contact')}>Contact</button>
-              </li>
-              <li>
-                <button onClick={() => router.push('/reclamations')}>
-                  Réclamations
-                </button>
-              </li>
-            </ul>
-          </div>
           <div className="client-sidebar-card">
             <h3>Astuce Wakelni</h3>
             <p>

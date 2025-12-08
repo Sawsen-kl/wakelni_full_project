@@ -312,7 +312,7 @@ export default function ClientPage() {
               <li>
                 <button
                   type="button"
-                  onClick={() => router.push('/profil/client')}
+                  onClick={() => router.push('/client/profile')}
                 >
                   Profil
                 </button>
@@ -320,7 +320,7 @@ export default function ClientPage() {
               <li>
                 <button
                   type="button"
-                  onClick={() => router.push('/contact')}
+                  onClick={() => router.push('/client/contact')}
                 >
                   Contact
                 </button>

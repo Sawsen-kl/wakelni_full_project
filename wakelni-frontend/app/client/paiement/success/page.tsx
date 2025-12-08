@@ -52,11 +52,15 @@ export default function PaymentSuccessPage() {
             </p>
 
             <div className="client-hero-buttons">
-              <button onClick={() => router.push("/client")}>
+              <button type="button" className="hero-btn-secondary" onClick={() => router.push("/client")}>
                 Retour à l&apos;accueil client
               </button>
-              <button onClick={() => router.push("/client/panier")}>
+              <button type="button" className="hero-btn-secondary" onClick={() => router.push("/client/panier")}>
                 Voir mon panier
+              </button>
+              {/* bouton Mes commandes */}
+              <button type="button" className="hero-btn-secondary" onClick={() => router.push("/client/commandes")}>
+                Mes commandes
               </button>
             </div>
           </div>
