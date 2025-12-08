@@ -10,7 +10,7 @@ export default function HomePage() {
       <section className="hero">
         <div className="hero-content">
           <div className="hero-text">
-            <h1>Wakelni – le goût de la maison, livré chez vous</h1>
+            <h1>Wakelni - le goût de la maison, livré chez vous</h1>
             <p>
               Mangez chez vous des plats préparés avec amour par des cuisiniers passionnés.
               Des recettes faites maison, avec l&apos;odeur de nos parents et de nos grands-parents,

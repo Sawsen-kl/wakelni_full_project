@@ -19,6 +19,7 @@ urlpatterns = [
     path("api/commandes/", include("commandes.urls")),
     path("api/paiements/", include("paiements.urls")),
     path("api/reclamations/", include("reclamations.urls")),
+    path("api/avis/", include("avis.urls")),
 ]
 
 # important pour servir les images en DEBUG

@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'reclamations',
     'paniers',
     'paiements',
+    'avis',
 ]
 
 MIDDLEWARE = [

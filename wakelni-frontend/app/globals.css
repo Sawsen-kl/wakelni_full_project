@@ -1339,3 +1339,231 @@ body {
 }
 
 
+/* Carte avis */
+.avis-card {
+  margin-top: 16px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+}
+
+.avis-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* Étoiles */
+.avis-stars {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.avis-star {
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+.avis-star-active {
+  color: #fbbf24; /* jaune / or */
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.avis-note-label {
+  margin-left: 8px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* Champs */
+.avis-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.avis-field label {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.avis-field textarea {
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  padding: 8px 10px;
+  font-size: 0.9rem;
+  resize: vertical;
+}
+
+.avis-field textarea:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+/* Message */
+.avis-message {
+  font-size: 0.9rem;
+  color: #1b5e20;
+  margin-bottom: 8px;
+}
+
+/* Bouton */
+.avis-submit {
+  width: 100%;
+  border-radius: 999px;
+  margin-top: 4px;
+}
+
+/* ===== Bouton "Envoyer mon avis" plus petit ===== */
+.avis-submit-btn {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  border-radius: 999px;
+  max-width: 220px;
+  margin: 8px auto 0;
+}
+
+/* Quand désactivé */
+.avis-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* Étoiles désactivées un peu grisées */
+.star-btn:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+/* ===== Bouton "Ajouter au panier" plus petit ===== */
+.client-add-cart-btn {
+  padding: 8px 18px;        /* au lieu de gros padding */
+  font-size: 0.95rem;
+  border-radius: 999px;
+  max-width: 220px;
+  margin: 12px auto 0;      /* centré et plus compact */
+}
+
+.avis-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.avis-modal {
+  background: #fff;
+  border-radius: 24px;
+  padding: 24px 28px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: auto;
+  position: relative;
+}
+
+.avis-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.avis-modal-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 24px;
+  margin-top: 16px;
+}
+
+.avis-form-title {
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.avis-stars-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.star-btn {
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.star-btn.filled {
+  opacity: 1;
+}
+
+.avis-textarea {
+  width: 100%;
+  min-height: 80px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.avis-actions {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.avis-submit-btn {
+  padding: 6px 16px;
+  border-radius: 999px;
+}
+
+.avis-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.avis-item {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #fafafa;
+}
+
+.avis-item-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+/* avis cuisinier*/
+
+.star-filled {
+  color: #f5a623;
+}
+.star-empty {
+  color: #ddd;
+}
+
+
+
+

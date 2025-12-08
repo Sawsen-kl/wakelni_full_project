@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiGet, apiPost } from '../../lib/api';
+import AvisForm from '../../components/AvisForm';
 
 type Plat = {
   id: string;
@@ -19,6 +20,14 @@ type Plat = {
   cuisinier: string; // username du cuisinier
 };
 
+type AvisItem = {
+  id: string;
+  note: number;
+  commentaire: string;
+  date: string;
+  client_name: string;
+};
+
 export default function ClientPage() {
   const router = useRouter();
 
@@ -31,8 +40,12 @@ export default function ClientPage() {
   const [loadingPlats, setLoadingPlats] = useState(true);
   const [errorPlats, setErrorPlats] = useState<string | null>(null);
 
-  const [ratings, setRatings] = useState<Record<string, number>>({});
-  const [comments, setComments] = useState<Record<string, string>>({});
+  // 🔎 État pour la modale d’avis
+  const [showAvisModal, setShowAvisModal] = useState(false);
+  const [selectedPlat, setSelectedPlat] = useState<Plat | null>(null);
+  const [avis, setAvis] = useState<AvisItem[]>([]);
+  const [loadingAvis, setLoadingAvis] = useState(false);
+  const [errorAvis, setErrorAvis] = useState<string | null>(null);
 
   // 🔐 Vérification auth
   useEffect(() => {
@@ -91,14 +104,6 @@ export default function ClientPage() {
     `${firstName || ''} ${lastName || ''}`.trim() || 'Client Wakelni';
   const avatarLetter = (firstName?.[0] || fullName[0] || 'C').toUpperCase();
 
-  function handleRatingChange(platId: string, value: number) {
-    setRatings((prev) => ({ ...prev, [platId]: value }));
-  }
-
-  function handleCommentChange(platId: string, value: string) {
-    setComments((prev) => ({ ...prev, [platId]: value }));
-  }
-
   // 🧺 VRAI ajout au panier + redirection
   async function handleAddToCart(plat: Plat) {
     try {
@@ -106,13 +111,55 @@ export default function ClientPage() {
         plat_id: plat.id,
         quantite: 1,
       });
-      // option : petit message
-      // alert(`"${plat.nom}" a été ajouté à votre panier.`);
       router.push('/client/panier');
     } catch (err: any) {
       console.error(err);
       alert(err?.message || "Erreur lors de l'ajout au panier.");
     }
+  }
+
+  // 🔎 Charger les avis pour un plat
+async function fetchAvisForPlat(platId: string) {
+  try {
+    setLoadingAvis(true);
+    setErrorAvis(null);
+
+    //  URL CORRECTE : /api/avis/avis-par-plat/?plat_id=...
+    const data = await apiGet(`/api/avis/avis-par-plat/?plat_id=${platId}`);
+
+    // on adapte le JSON renvoyé par AvisCuisinierSerializer
+    const mapped = (data as any[]).map((a) => ({
+      id: a.id,
+      note: a.note,
+      commentaire: a.commentaire,
+      date: a.date,
+      client_name: a.client_nom || a.client_email, // fallback
+    }));
+
+    setAvis(mapped);
+  } catch (err: any) {
+    console.error(err);
+    setErrorAvis(
+      err?.message || 'Impossible de charger les avis pour ce plat.'
+    );
+  } finally {
+    setLoadingAvis(false);
+  }
+}
+
+  // 📌 Ouvrir la modale d'avis
+  async function handleOpenAvisModal(plat: Plat) {
+    setSelectedPlat(plat);
+    setShowAvisModal(true);
+    await fetchAvisForPlat(plat.id);
+  }
+
+  // 🔒 Fermer la modale
+  function handleCloseAvisModal() {
+    setShowAvisModal(false);
+    setSelectedPlat(null);
+    setAvis([]);
+    setErrorAvis(null);
   }
 
   if (checkingAuth) {
@@ -156,10 +203,14 @@ export default function ClientPage() {
               </button>
 
               {/* bouton Mes commandes */}
-              <button type="button" className="hero-btn-secondary" onClick={() => router.push("/client/commandes")}>
+              <button
+                type="button"
+                className="hero-btn-secondary"
+                onClick={() => router.push('/client/commandes')}
+              >
                 Mes commandes
               </button>
-              </div>
+            </div>
           </div>
 
           {/* Carte compte en haut à droite */}
@@ -191,7 +242,7 @@ export default function ClientPage() {
               Plats disponibles près de chez vous
             </h2>
             <p className="client-section-subtitle">
-              Cliquez sur un plat pour voir les détails, ajoutez-le à votre
+              Cliquez sur un plat pour donner ton avis, ajoutez-le à votre
               panier et laissez une note pour aider les autres gourmands.
             </p>
 
@@ -207,14 +258,17 @@ export default function ClientPage() {
 
             <div className="plat-grid-client">
               {plats.map((plat) => {
-                const rating = ratings[plat.id] || 0;
-                const comment = comments[plat.id] || '';
                 const chefInitial =
                   plat.cuisinier?.[0]?.toUpperCase?.() || 'C';
 
                 return (
                   <article key={plat.id} className="plat-card-client">
-                    <div className="plat-client-image-wrapper">
+                    {/* IMAGE CLIQUABLE => ouvre la modale d'avis */}
+                    <button
+                      type="button"
+                      className="plat-client-image-wrapper"
+                      onClick={() => handleOpenAvisModal(plat)}
+                    >
                       {plat.photo_url ? (
                         <img
                           src={plat.photo_url}
@@ -226,7 +280,7 @@ export default function ClientPage() {
                           Photo à venir
                         </div>
                       )}
-                    </div>
+                    </button>
 
                     <div className="plat-client-body">
                       <div className="plat-client-chef">
@@ -257,35 +311,6 @@ export default function ClientPage() {
                             : 'Rupture de stock'}
                         </span>
                       </p>
-
-                      <div className="plat-rating">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <button
-                            key={star}
-                            type="button"
-                            className={
-                              star <= rating ? 'star-btn filled' : 'star-btn'
-                            }
-                            onClick={() =>
-                              handleRatingChange(plat.id, star)
-                            }
-                          >
-                            ★
-                          </button>
-                        ))}
-                        <span className="rating-text">
-                          {rating > 0 ? `${rating}/5` : 'Notez ce plat'}
-                        </span>
-                      </div>
-
-                      <textarea
-                        className="plat-comment-input"
-                        placeholder="Laissez un commentaire sur ce plat..."
-                        value={comment}
-                        onChange={(e) =>
-                          handleCommentChange(plat.id, e.target.value)
-                        }
-                      />
 
                       <button
                         className="btn btn-primary client-add-cart-btn"
@@ -345,6 +370,78 @@ export default function ClientPage() {
           </div>
         </aside>
       </div>
+
+      {/* ===== MODALE AVIS ===== */}
+      {showAvisModal && selectedPlat && (
+        <div className="avis-modal-overlay" onClick={handleCloseAvisModal}>
+          <div
+            className="avis-modal"
+            onClick={(e) => e.stopPropagation()} // pour ne pas fermer en cliquant dans la modale
+          >
+            <button
+              type="button"
+              className="avis-modal-close"
+              onClick={handleCloseAvisModal}
+            >
+              ✕
+            </button>
+
+            <h2 className="avis-modal-title">
+              Avis sur {selectedPlat.nom}
+            </h2>
+
+            <div className="avis-modal-content">
+              {/* Colonne gauche : formulaire d'avis */}
+              <div className="avis-modal-left">
+                <AvisForm
+                  platId={selectedPlat.id}
+                  platNom={selectedPlat.nom}
+                  onSubmitted={async () => {
+                    // après envoi, on recharge la liste d'avis
+                    await fetchAvisForPlat(selectedPlat.id);
+                  }}
+                />
+              </div>
+
+              {/* Colonne droite : liste des avis existants */}
+              <div className="avis-modal-right">
+                <h3 className="avis-list-title">Avis des autres clients</h3>
+
+                {loadingAvis && <p>Chargement des avis…</p>}
+                {errorAvis && <p className="error-text">{errorAvis}</p>}
+
+                {!loadingAvis && !errorAvis && avis.length === 0 && (
+                  <p>Aucun avis pour l’instant. Soyez le premier à commenter !</p>
+                )}
+
+                <ul className="avis-list">
+                  {avis.map((a) => (
+                    <li key={a.id} className="avis-item">
+                      <div className="avis-item-header">
+                        <strong>{a.client_name}</strong>
+                        <span className="avis-item-stars">
+                          {'★'.repeat(a.note).padEnd(5, '☆')}
+                        </span>
+                      </div>
+                      {a.commentaire && (
+                        <p className="avis-item-comment">
+                          {a.commentaire}
+                        </p>
+                      )}
+                      <small className="avis-item-date">
+                        {new Date(a.date).toLocaleString('fr-CA', {
+                          dateStyle: 'short',
+                          timeStyle: 'short',
+                        })}
+                      </small>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
