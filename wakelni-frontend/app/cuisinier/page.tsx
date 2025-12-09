@@ -143,11 +143,7 @@ export default function CuisinierDashboardPage() {
           {/* Onglets */}
           <button
             className="btn header-tab"
-            onClick={() =>
-              document
-                .getElementById('section-compte')
-                ?.scrollIntoView({ behavior: 'smooth' })
-            }
+            onClick={() => router.push('/cuisinier/profile')}
           >
             Mon compte
           </button>
@@ -162,12 +158,6 @@ export default function CuisinierDashboardPage() {
             onClick={() => router.push('/cuisinier/avis')}
           >
             Avis
-          </button>
-          <button
-            className="btn header-tab"
-            onClick={() => router.push('/cuisinier/notifications')}
-          >
-            Notifications
           </button>
           <button
             className="btn header-tab"
@@ -294,29 +284,6 @@ export default function CuisinierDashboardPage() {
                 </div>
               </div>
             ))}
-          </div>
-        </section>
-
-        {/* SECTION COMPTE */}
-        <section id="section-compte" className="cuisinier-section">
-          <h2>Mon compte</h2>
-          <p>
-            Ici tu pourras gérer les informations de ton profil cuisinier
-            (bio, adresse, avatar, etc.).
-          </p>
-          <div className="account-actions">
-            <button
-              className="btn btn-secondary-light"
-              onClick={() => router.push('/profil/cuisinier')}
-            >
-              Modifier mon profil
-            </button>
-            <button
-              className="btn btn-danger-outline"
-              onClick={handleDeactivateAccount}
-            >
-              Désactiver mon compte
-            </button>
           </div>
         </section>
       </div>

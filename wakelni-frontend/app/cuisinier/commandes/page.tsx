@@ -148,12 +148,6 @@ export default function CuisinierCommandesPage() {
           </button>
           <button
             className="btn header-tab"
-            onClick={() => router.push('/cuisinier/notifications')}
-          >
-            Notifications
-          </button>
-          <button
-            className="btn header-tab"
             onClick={() => router.push('/cuisinier/commandes')}
           >
             Commandes
