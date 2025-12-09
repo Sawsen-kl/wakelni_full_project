@@ -25,7 +25,7 @@ export default function NavBar() {
 
     setUsername(storedUsername);
     setRole(storedRole);
-
+    // Si pas connecté → retour à la home (sauf sur login / register)
     if (!storedUsername && !pathname.startsWith('/login') && !pathname.startsWith('/register')) {
       router.push('/');
       }

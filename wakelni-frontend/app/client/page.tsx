@@ -353,7 +353,7 @@ async function fetchAvisForPlat(platId: string) {
               <li>
                 <button
                   type="button"
-                  onClick={() => router.push('/reclamations')}
+                  onClick={() => router.push('client/reclamations')}
                 >
                   Réclamations
                 </button>

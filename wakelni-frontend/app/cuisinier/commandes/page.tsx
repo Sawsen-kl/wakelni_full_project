@@ -242,12 +242,12 @@ export default function CuisinierCommandesPage() {
                   </label>
 
                   {isLocked ? (
-                    // 🔒 Statut gelé : plus de liste déroulante
+                    //  Statut gelé : plus de liste déroulante
                     <span className={classStatut(commande.statut)}>
                       {STATUT_LABELS[commande.statut]}
                     </span>
                   ) : (
-                    // 🔁 Statuts modifiables
+                    //  Statuts modifiables
                     <select
                       id={`statut-${commande.id}`}
                       value={commande.statut}
