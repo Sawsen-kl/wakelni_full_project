@@ -1,10 +1,10 @@
 // app/client/page.tsx
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { apiGet, apiPost } from '../../lib/api';
-import AvisForm from '../../components/AvisForm';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { apiGet, apiPost } from "../../lib/api";
+import AvisForm from "../../components/AvisForm";
 
 type Plat = {
   id: string;
@@ -40,6 +40,9 @@ export default function ClientPage() {
   const [loadingPlats, setLoadingPlats] = useState(true);
   const [errorPlats, setErrorPlats] = useState<string | null>(null);
 
+  // 🔎 recherche
+  const [search, setSearch] = useState("");
+
   // 🔎 État pour la modale d’avis
   const [showAvisModal, setShowAvisModal] = useState(false);
   const [selectedPlat, setSelectedPlat] = useState<Plat | null>(null);
@@ -49,20 +52,20 @@ export default function ClientPage() {
 
   // 🔐 Vérification auth
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
-    const token = window.localStorage.getItem('accessToken');
-    const storedRole = window.localStorage.getItem('role');
-    const storedFirst = window.localStorage.getItem('first_name');
-    const storedLast = window.localStorage.getItem('last_name');
+    const token = window.localStorage.getItem("accessToken");
+    const storedRole = window.localStorage.getItem("role");
+    const storedFirst = window.localStorage.getItem("first_name");
+    const storedLast = window.localStorage.getItem("last_name");
 
     if (!token) {
-      router.replace('/login');
+      router.replace("/login");
       return;
     }
 
-    if (storedRole === 'CUISINIER') {
-      router.replace('/cuisinier');
+    if (storedRole === "CUISINIER") {
+      router.replace("/cuisinier");
       return;
     }
 
@@ -80,11 +83,11 @@ export default function ClientPage() {
       try {
         setLoadingPlats(true);
         setErrorPlats(null);
-        const data = await apiGet('/api/plats/'); // PlatListCreateView renvoie seulement est_actif=True
+        const data = await apiGet("/api/plats/"); // PlatListCreateView renvoie seulement est_actif=True
         setPlats(data);
       } catch (err: any) {
         console.error(err);
-        setErrorPlats(err?.message || 'Impossible de charger les plats.');
+        setErrorPlats(err?.message || "Impossible de charger les plats.");
       } finally {
         setLoadingPlats(false);
       }
@@ -94,24 +97,24 @@ export default function ClientPage() {
   }, [checkingAuth]);
 
   function handleLogout() {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       window.localStorage.clear();
-      window.location.href = '/login';
+      window.location.href = "/login";
     }
   }
 
   const fullName =
-    `${firstName || ''} ${lastName || ''}`.trim() || 'Client Wakelni';
-  const avatarLetter = (firstName?.[0] || fullName[0] || 'C').toUpperCase();
+    `${firstName || ""} ${lastName || ""}`.trim() || "Client Wakelni";
+  const avatarLetter = (firstName?.[0] || fullName[0] || "C").toUpperCase();
 
   // 🧺 VRAI ajout au panier + redirection
   async function handleAddToCart(plat: Plat) {
     try {
-      await apiPost('/api/paniers/ajouter/', {
+      await apiPost("/api/paniers/ajouter/", {
         plat_id: plat.id,
         quantite: 1,
       });
-      router.push('/client/panier');
+      router.push("/client/panier");
     } catch (err: any) {
       console.error(err);
       alert(err?.message || "Erreur lors de l'ajout au panier.");
@@ -119,33 +122,33 @@ export default function ClientPage() {
   }
 
   // 🔎 Charger les avis pour un plat
-async function fetchAvisForPlat(platId: string) {
-  try {
-    setLoadingAvis(true);
-    setErrorAvis(null);
+  async function fetchAvisForPlat(platId: string) {
+    try {
+      setLoadingAvis(true);
+      setErrorAvis(null);
 
-    //  URL CORRECTE : /api/avis/avis-par-plat/?plat_id=...
-    const data = await apiGet(`/api/avis/avis-par-plat/?plat_id=${platId}`);
+      //  URL CORRECTE : /api/avis/avis-par-plat/?plat_id=...
+      const data = await apiGet(`/api/avis/avis-par-plat/?plat_id=${platId}`);
 
-    // on adapte le JSON renvoyé par AvisCuisinierSerializer
-    const mapped = (data as any[]).map((a) => ({
-      id: a.id,
-      note: a.note,
-      commentaire: a.commentaire,
-      date: a.date,
-      client_name: a.client_nom || a.client_email, // fallback
-    }));
+      // on adapte le JSON renvoyé par AvisCuisinierSerializer
+      const mapped = (data as any[]).map((a) => ({
+        id: a.id,
+        note: a.note,
+        commentaire: a.commentaire,
+        date: a.date,
+        client_name: a.client_nom || a.client_email, // fallback
+      }));
 
-    setAvis(mapped);
-  } catch (err: any) {
-    console.error(err);
-    setErrorAvis(
-      err?.message || 'Impossible de charger les avis pour ce plat.'
-    );
-  } finally {
-    setLoadingAvis(false);
+      setAvis(mapped);
+    } catch (err: any) {
+      console.error(err);
+      setErrorAvis(
+        err?.message || "Impossible de charger les avis pour ce plat."
+      );
+    } finally {
+      setLoadingAvis(false);
+    }
   }
-}
 
   // 📌 Ouvrir la modale d'avis
   async function handleOpenAvisModal(plat: Plat) {
@@ -162,6 +165,22 @@ async function fetchAvisForPlat(platId: string) {
     setErrorAvis(null);
   }
 
+  // 🔎 filtrage des plats (stock > 0, actif, + recherche)
+  const filteredPlats = plats
+    .filter((plat) => plat.stock > 0 && plat.est_actif)
+    .filter((plat) => {
+      if (!search.trim()) return true;
+      const q = search.toLowerCase();
+
+      return (
+        plat.nom.toLowerCase().includes(q) ||
+        (plat.description || "").toLowerCase().includes(q) ||
+        (plat.ingredients || "").toLowerCase().includes(q) ||
+        (plat.ville || "").toLowerCase().includes(q) ||
+        (plat.cuisinier || "").toLowerCase().includes(q)
+      );
+    });
+
   if (checkingAuth) {
     return <p style={{ padding: 24 }}>Vérification de la connexion...</p>;
   }
@@ -173,9 +192,7 @@ async function fetchAvisForPlat(platId: string) {
         <div className="client-hero-overlay">
           <div className="client-hero-content">
             <p className="client-hero-eyebrow">Espace client</p>
-            <h1 className="client-hero-title">
-              Bonsoir, {fullName} 👋
-            </h1>
+            <h1 className="client-hero-title">Bonsoir, {fullName} 👋</h1>
             <p className="client-hero-subtitle">
               Découvrez les plats faits maison près de chez vous, ajoutez-les
               au panier et laissez un avis pour soutenir vos cuisiniers
@@ -187,8 +204,8 @@ async function fetchAvisForPlat(platId: string) {
                 type="button"
                 className="hero-btn-secondary"
                 onClick={() => {
-                  const platsSection = document.getElementById('plats-client');
-                  platsSection?.scrollIntoView({ behavior: 'smooth' });
+                  const platsSection = document.getElementById("plats-client");
+                  platsSection?.scrollIntoView({ behavior: "smooth" });
                 }}
               >
                 Voir les plats disponibles
@@ -197,7 +214,7 @@ async function fetchAvisForPlat(platId: string) {
               <button
                 type="button"
                 className="hero-btn-secondary"
-                onClick={() => router.push('/client/panier')}
+                onClick={() => router.push("/client/panier")}
               >
                 Mon panier
               </button>
@@ -206,7 +223,7 @@ async function fetchAvisForPlat(platId: string) {
               <button
                 type="button"
                 className="hero-btn-secondary"
-                onClick={() => router.push('/client/commandes')}
+                onClick={() => router.push("/client/commandes")}
               >
                 Mes commandes
               </button>
@@ -219,7 +236,7 @@ async function fetchAvisForPlat(platId: string) {
             <div className="client-hero-account-text">
               <span className="client-hero-name">{fullName}</span>
               <span className="client-hero-role">
-                {role === 'CLIENT' ? 'Compte client' : 'Utilisateur'}
+                {role === "CLIENT" ? "Compte client" : "Utilisateur"}
               </span>
             </div>
             <button
@@ -246,20 +263,56 @@ async function fetchAvisForPlat(platId: string) {
               panier et laissez une note pour aider les autres gourmands.
             </p>
 
+            {/* Barre de recherche */}
+            <div className="client-search-wrapper">
+              <span className="client-search-icon">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <circle
+                    cx="11"
+                    cy="11"
+                    r="7"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    fill="none"
+                  />
+                  <line
+                    x1="16"
+                    y1="16"
+                    x2="21"
+                    y2="21"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </span>
+              <input
+                type="text"
+                className="client-search-input"
+                placeholder="Rechercher un plat, un ingrédient, une ville..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+
             {loadingPlats && <p>Chargement des plats...</p>}
             {errorPlats && <p className="error-text">{errorPlats}</p>}
 
-            {!loadingPlats && plats.length === 0 && (
+            {!loadingPlats && filteredPlats.length === 0 && (
               <p>
-                Aucun plat n&apos;est disponible pour le moment. Revenez plus
-                tard 😋
+                Aucun plat ne correspond à votre recherche pour le moment 😋
               </p>
             )}
 
             <div className="plat-grid-client">
-              {plats.map((plat) => {
+              {filteredPlats.map((plat) => {
                 const chefInitial =
-                  plat.cuisinier?.[0]?.toUpperCase?.() || 'C';
+                  plat.cuisinier?.[0]?.toUpperCase?.() || "C";
 
                 return (
                   <article key={plat.id} className="plat-card-client">
@@ -288,27 +341,27 @@ async function fetchAvisForPlat(platId: string) {
                         <div>
                           <div className="chef-name">{plat.cuisinier}</div>
                           <div className="chef-location">
-                            {plat.ville || 'Ville inconnue'}
+                            {plat.ville || "Ville inconnue"}
                           </div>
                         </div>
                       </div>
 
                       <h3 className="plat-client-title">{plat.nom}</h3>
                       <p className="plat-client-description">
-                        {plat.description || 'Plat maison délicieux.'}
+                        {plat.description || "Plat maison délicieux."}
                       </p>
 
                       <p className="plat-client-meta">
                         <span className="plat-price">
-                          {typeof plat.prix === 'number'
+                          {typeof plat.prix === "number"
                             ? plat.prix.toFixed(2)
-                            : plat.prix}{' '}
+                            : plat.prix}{" "}
                           $
                         </span>
                         <span className="plat-stock">
                           {plat.stock > 0
                             ? `${plat.stock} portion(s) disponible(s)`
-                            : 'Rupture de stock'}
+                            : "Rupture de stock"}
                         </span>
                       </p>
 
@@ -318,8 +371,8 @@ async function fetchAvisForPlat(platId: string) {
                         disabled={plat.stock === 0}
                       >
                         {plat.stock === 0
-                          ? 'Indisponible'
-                          : 'Ajouter au panier'}
+                          ? "Indisponible"
+                          : "Ajouter au panier"}
                       </button>
                     </div>
                   </article>
@@ -337,7 +390,7 @@ async function fetchAvisForPlat(platId: string) {
               <li>
                 <button
                   type="button"
-                  onClick={() => router.push('/client/profile')}
+                  onClick={() => router.push("/client/profile")}
                 >
                   Profil
                 </button>
@@ -345,7 +398,7 @@ async function fetchAvisForPlat(platId: string) {
               <li>
                 <button
                   type="button"
-                  onClick={() => router.push('/client/contact')}
+                  onClick={() => router.push("/client/contact")}
                 >
                   Contact
                 </button>
@@ -353,7 +406,7 @@ async function fetchAvisForPlat(platId: string) {
               <li>
                 <button
                   type="button"
-                  onClick={() => router.push('client/reclamations')}
+                  onClick={() => router.push("client/reclamations")}
                 >
                   Réclamations
                 </button>
@@ -364,8 +417,8 @@ async function fetchAvisForPlat(platId: string) {
           <div className="client-sidebar-card">
             <h3>Astuce Wakelni</h3>
             <p>
-              Ajoutez vos plats préférés au panier, puis laissez une note
-              et un commentaire pour aider les autres clients à choisir.
+              Ajoutez vos plats préférés au panier, puis laissez une note et un
+              commentaire pour aider les autres clients à choisir.
             </p>
           </div>
         </aside>
@@ -386,9 +439,7 @@ async function fetchAvisForPlat(platId: string) {
               ✕
             </button>
 
-            <h2 className="avis-modal-title">
-              Avis sur {selectedPlat.nom}
-            </h2>
+            <h2 className="avis-modal-title">Avis sur {selectedPlat.nom}</h2>
 
             <div className="avis-modal-content">
               {/* Colonne gauche : formulaire d'avis */}
@@ -411,7 +462,9 @@ async function fetchAvisForPlat(platId: string) {
                 {errorAvis && <p className="error-text">{errorAvis}</p>}
 
                 {!loadingAvis && !errorAvis && avis.length === 0 && (
-                  <p>Aucun avis pour l’instant. Soyez le premier à commenter !</p>
+                  <p>
+                    Aucun avis pour l’instant. Soyez le premier à commenter !
+                  </p>
                 )}
 
                 <ul className="avis-list">
@@ -420,18 +473,16 @@ async function fetchAvisForPlat(platId: string) {
                       <div className="avis-item-header">
                         <strong>{a.client_name}</strong>
                         <span className="avis-item-stars">
-                          {'★'.repeat(a.note).padEnd(5, '☆')}
+                          {"★".repeat(a.note).padEnd(5, "☆")}
                         </span>
                       </div>
                       {a.commentaire && (
-                        <p className="avis-item-comment">
-                          {a.commentaire}
-                        </p>
+                        <p className="avis-item-comment">{a.commentaire}</p>
                       )}
                       <small className="avis-item-date">
-                        {new Date(a.date).toLocaleString('fr-CA', {
-                          dateStyle: 'short',
-                          timeStyle: 'short',
+                        {new Date(a.date).toLocaleString("fr-CA", {
+                          dateStyle: "short",
+                          timeStyle: "short",
                         })}
                       </small>
                     </li>

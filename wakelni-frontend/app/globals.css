@@ -1723,5 +1723,80 @@ body {
   font-weight: 600;
 }
 
+.reclamation-client {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-top: 2px;
+}
+/* recherche plat client*/
 
+.client-search-container {
+  position: relative;
+  max-width: 480px;
+  width: 100%;
+  margin: 24px 0 48px; /* ✅ espace au-dessus et en dessous */
+}
 
+/* Champ de recherche */
+.client-search-input {
+  width: 100%;
+  padding: 14px 20px 14px 48px; /* ✅ place pour la loupe */
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+/* Placeholder */
+.client-search-input::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+/* Focus (quand on clique dedans) */
+.client-search-input:focus {
+  border-color: #c1121f;
+  box-shadow: 0 12px 30px rgba(193, 18, 31, 0.25);
+  transform: translateY(-1px);
+}
+
+/* Icône loupe */
+.client-search-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  font-size: 1.05rem;
+  pointer-events: none;
+}
+
+/* Animation douce au survol */
+.client-search-container:hover .client-search-input {
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.12);
+}
+
+/* ============================= */
+/*   ESPACEMENT AUTOUR DES PLATS */
+/* ============================= */
+
+.client-section-title {
+  margin-bottom: 12px;
+}
+
+.client-section-subtitle {
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+
+.plat-grid-client {
+  margin-top: 28px;
+  row-gap: 32px;
+}
+
+.plat-card-client {
+  margin-bottom: 16px;
+}

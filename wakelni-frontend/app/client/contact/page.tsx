@@ -71,14 +71,7 @@ export default function ContactPage() {
                 className="hero-btn-secondary"
                 onClick={() => router.push("/client")}
               >
-                Retour à l&apos;accueil client
-              </button>
-              <button
-                type="button"
-                className="hero-btn-secondary"
-                onClick={() => router.push("/client/commandes")}
-              >
-                Voir mes commandes
+                Retour à l&apos;accueil
               </button>
             </div>
           </div>
