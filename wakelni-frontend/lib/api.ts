@@ -23,7 +23,7 @@ async function handleResponse(res: Response) {
       console.error('API error data:', data);
       errorText = (data as any).detail || JSON.stringify(data);
 
-      // 👉 Ici on détecte les problèmes de token JWT
+      //  Ici on détecte les problèmes de token JWT
       const lower = String(errorText).toLowerCase();
       if (
         res.status === 401 ||                       // non autorisé
@@ -107,3 +107,16 @@ export async function apiPatch(path: string, body: any) {
   return handleResponse(res);
 }
 
+export async function apiPatchForm(path: string, formData: FormData) {
+  const headers = buildHeaders();
+  // On enlève Content-Type pour laisser le navigateur mettre multipart/form-data
+  delete headers['Content-Type'];
+
+  const res = await fetch(`${BASE_URL}${path}`, {
+    method: 'PATCH',
+    headers,
+    body: formData,
+  });
+
+  return handleResponse(res);
+}
