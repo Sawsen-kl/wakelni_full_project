@@ -202,7 +202,7 @@ export default function MesCommandesPage() {
                 className="hero-btn-secondary"
                 onClick={() => router.push("/client")}
               >
-                Retour à l&apos;accueil client
+                Retour à l&apos;accueil 
               </button>
               <button
                 type="button"

@@ -31,12 +31,47 @@ export default function PaymentSuccessPage() {
         setStatus("ok");
         setMessage("Votre commande est en cours de préparation.");
       })
-      .catch((err) => {
+      .catch((err: any) => {
         console.error(err);
         setStatus("error");
-        setMessage("Impossible de confirmer votre paiement.");
+        // on récupère le message de l'API si dispo
+        const apiMsg = err?.message || "";
+        setMessage(
+          apiMsg ||
+            "Impossible de confirmer votre paiement. Si le montant n'a pas été débité, la commande ne sera pas créée."
+        );
       });
   }, [searchParams]);
+
+  // ========= TEXTES DYNAMIQUES =========
+  const heroEyebrow =
+    status === "ok"
+      ? "PAIEMENT RÉUSSI"
+      : status === "error"
+      ? "PROBLÈME DE PAIEMENT"
+      : "VÉRIFICATION EN COURS";
+
+  const heroTitle =
+    status === "ok"
+      ? "Merci pour votre commande 🎉"
+      : status === "error"
+      ? "Nous n’avons pas pu confirmer votre paiement"
+      : "Nous vérifions votre paiement…";
+
+  const heroSubtitle =
+    status === "ok"
+      ? "Votre paiement a été validé. Votre commande est maintenant en cours de préparation."
+      : status === "error"
+      ? message ||
+        "Un problème est survenu lors de la confirmation du paiement. Si vous n’avez pas été débité, vous pouvez réessayer."
+      : "Veuillez patienter quelques instants, nous confirmons votre paiement auprès de Stripe.";
+
+  const sectionTitle =
+    status === "ok"
+      ? "Votre commande est en cours de préparation"
+      : status === "error"
+      ? "Le paiement n’a pas pu être confirmé"
+      : "Confirmation de votre paiement en cours";
 
   return (
     <div className="client-page">
@@ -44,22 +79,30 @@ export default function PaymentSuccessPage() {
       <section className="client-hero">
         <div className="client-hero-overlay">
           <div className="client-hero-content">
-            <p className="client-hero-eyebrow">PAIEMENT RÉUSSI</p>
-            <h1 className="client-hero-title">Merci pour votre commande 🎉</h1>
-            <p className="client-hero-subtitle">
-              Votre paiement a été traité avec succès. Votre commande est
-              maintenant en cours de préparation.
-            </p>
+            <p className="client-hero-eyebrow">{heroEyebrow}</p>
+            <h1 className="client-hero-title">{heroTitle}</h1>
+            <p className="client-hero-subtitle">{heroSubtitle}</p>
 
             <div className="client-hero-buttons">
-              <button type="button" className="hero-btn-secondary" onClick={() => router.push("/client")}>
+              <button
+                type="button"
+                className="hero-btn-secondary"
+                onClick={() => router.push("/client")}
+              >
                 Retour à l&apos;accueil client
               </button>
-              <button type="button" className="hero-btn-secondary" onClick={() => router.push("/client/panier")}>
+              <button
+                type="button"
+                className="hero-btn-secondary"
+                onClick={() => router.push("/client/panier")}
+              >
                 Voir mon panier
               </button>
-              {/* bouton Mes commandes */}
-              <button type="button" className="hero-btn-secondary" onClick={() => router.push("/client/commandes")}>
+              <button
+                type="button"
+                className="hero-btn-secondary"
+                onClick={() => router.push("/client/commandes")}
+              >
                 Mes commandes
               </button>
             </div>
@@ -70,9 +113,7 @@ export default function PaymentSuccessPage() {
       {/* Bloc d'état de la commande */}
       <main className="client-main-layout">
         <div className="client-main-column">
-          <h2 className="client-section-title">
-            Votre commande est en cours de préparation
-          </h2>
+          <h2 className="client-section-title">{sectionTitle}</h2>
 
           {status === "loading" && (
             <p>Confirmation de votre paiement en cours...</p>
@@ -93,10 +134,14 @@ export default function PaymentSuccessPage() {
           )}
 
           {status === "error" && (
-            <p style={{ color: "#b00020" }}>
-              {message ||
-                "Un problème est survenu lors de la confirmation du paiement."}
-            </p>
+            <>
+              <p style={{ color: "#b00020", marginBottom: 12 }}>{message}</p>
+              <p style={{ fontSize: "0.9rem", color: "#555" }}>
+                Vérifiez dans votre relevé bancaire si le paiement a bien été
+                débité. Si ce n’est pas le cas, vous pouvez retourner à vos
+                plats et réessayer le paiement.
+              </p>
+            </>
           )}
         </div>
       </main>

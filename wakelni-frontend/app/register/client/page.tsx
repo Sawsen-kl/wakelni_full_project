@@ -162,7 +162,7 @@ export default function RegisterClientPage() {
           </label>
 
           <label style={{ fontWeight: 600 }}>
-            Référence (ex : étage, porte, code...)
+            Références alimentaires
             <input
               type="text"
               value={reference}

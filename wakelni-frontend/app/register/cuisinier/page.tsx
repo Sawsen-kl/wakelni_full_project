@@ -201,7 +201,7 @@ export default function RegisterCuisinierPage() {
           {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
           {success && <p style={{ color: 'green', textAlign: 'center' }}>{success}</p>}
 
-          {/* 🔵 BOUTON SE CONNECTER APRÈS SUCCÈS */}
+          {/* BOUTON SE CONNECTER APRÈS SUCCÈS */}
           {success && (
             <div style={{ textAlign: "center" }}>
               <a
