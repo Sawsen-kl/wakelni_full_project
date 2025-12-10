@@ -1,139 +1,316 @@
-# WAKELNI -- README Technique (Backend, Frontend, Base de données)
+# 🍽️ Wakelni – Application Web Transactionnelle (Django + Next.js + Stripe)
 
-## 1. Vue d'ensemble
+Projet de plateforme de repas faits maison reliant **clients** et **cuisiniers**, avec :
 
-WAKELNI est une application web transactionnelle qui met en relation : -
-des cuisiniers qui publient des plats faits maison, - des clients qui
-commandent, paient en ligne, laissent des avis et peuvent déposer des
-réclamations.
+- Backend en **Django + Django REST Framework**
+- Frontend en **Next.js (React)**  
+- Authentification JWT
+- Paiement en ligne avec **Stripe**
+- Gestion des commandes, avis et réclamations
 
-L'application est découpée en trois grandes parties : - Backend : API
-REST en Django + Django REST Framework, connectée à PostgreSQL (Neon). -
-Frontend : interface utilisateur en Next.js (React). - Base de données :
-PostgreSQL (instance Neon).
+---
 
-La communication entre frontend et backend se fait via des requêtes HTTP
-sécurisées avec des JWT.
+## 1. Architecture générale
 
-## 2. Architecture générale
+```text
++-----------------------+          +----------------------------+
+|  Frontend Next.js     |  HTTP    |  Backend Django / DRF      |
+|  (wakelni-frontend)   +--------->+  (wakelni-backend)         |
+|  http://localhost:3000|  JSON    |  http://localhost:8000     |
++-----------------------+          +----------------------------+
+                                           |
+                                           | ORM
+                                           v
+                                    Base de données (Neon / SQLite)
 
-### wakelni-backend/
+```
+- Le frontend appelle le backend via des requêtes HTTP (GET, POST, PATCH, DELETE) sur des URLs du type /api/....
+- Les réponses sont en JSON.
+- L’authentification se fait avec des tokens JWT envoyés dans l’en-tête :
 
-Projet Django (API REST)
+```http
+Authorization: Bearer <accessToken>
+```
+Le frontend lit l’URL du backend via la variable d’environnement :
+```env
+NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
+```
+---
 
-Apps principales : - users - plats - paniers - commandes - avis -
-reclamations
+## 2. Arborescence (simplifiée)
+```text
+wakelni_full_project/
+├── wakelni-backend/          # Projet Django (API)
+│   ├── manage.py
+│   ├── wakelni_backend/      # settings, urls, wsgi
+│   ├── users/                # utilisateurs, login, register, rôles
+│   ├── plats/                # plats des cuisiniers
+│   ├── paniers/              # panier du client
+│   ├── commandes/            # commandes et statuts
+│   ├── avis/                 # avis sur les plats
+│   ├── reclamations/         # réclamations sur les commandes
+│   └── ...
+└── wakelni-frontend/         # Projet Next.js
+    ├── app/
+    │   ├── login/
+    │   ├── client/
+    │   │   ├── page.tsx
+    │   │   ├── commandes/
+    │   │   └── reclamations/
+    │   └── cuisinier/
+    ├── lib/api.ts            # helper pour appeler le backend
+    └── ...
+```
+---
 
-### wakelni-frontend/
+## 2. Lancer le backend (Django / DRF)
 
-Projet Next.js (App Router)
+### 3.1. Prérequis
 
-Pages principales : - /login, /register - /client, /client/panier,
-/client/commandes, /client/reclamations, /client/profile,
-/client/contact - /cuisinier, /cuisinier/plat-nouveau,
-/cuisinier/commandes, /cuisinier/reclamations, /cuisinier/avis
+- Python 3.11 (ou 3.10)
+- pip
+- (optionnel) Base de données Neon/PostgreSQL
+→ sinon, SQLite par défaut fonctionne aussi.
 
-## 3. Backend -- Django / DRF
+### 3.2. Installation
 
-### 3.1. Technologies
+Depuis le dossier wakelni-backend :
+```bash
+cd wakelni-backend
 
--   Python 3.11
--   Django
--   Django REST Framework
--   JWT (simplejwt)
--   PostgreSQL (Neon)
--   Stripe
+# Créer un virtualenv
+python -m venv venv
+# Activer le venv
+# Windows :
+venv\Scripts\activate
+# macOS / Linux :
+# source venv/bin/activate
 
-### 3.2. Authentification et rôles
+# Installer les dépendances
+pip install -r requirements.txt
+```
+### 3.3. Variables d’environnement backend
 
--   Rôles : CLIENT, CUISINIER
--   JWT stocké dans le localStorage
--   Vues protégées par IsAuthenticated
+Créer un fichier .env (ou utiliser les settings existants) avec au minimum :
 
-### 3.3. App plats
+```env
+SECRET_KEY=change_me_en_prod
+DEBUG=True
 
--   CRUD des plats côté cuisinier
--   Endpoints principaux :
-    -   GET /api/plats/
-    -   GET /api/plats/mes-plats/
-    -   POST /api/plats/
-    -   PATCH /api/plats/`<id>`{=html}/
+# Exemple Neon / Postgres (adapter)
+DATABASE_URL=postgres://user:password@host:port/dbname
 
-### 3.4. App paniers
+# ou, pour SQLite, Django peut utiliser le settings par défaut
 
--   Ajout, modification, suppression du panier
--   Endpoints :
-    -   POST /api/paniers/ajouter/
-    -   POST /api/paniers/modifier/
-    -   POST /api/paniers/vider/
-    -   GET /api/paniers/moi/
+# Stripe (si utilisé côté backend)
+STRIPE_SECRET_KEY=sk_test_xxx
+STRIPE_PUBLISHABLE_KEY=pk_test_xxx
+STRIPE_WEBHOOK_SECRET=whsec_xxx
+```
+### 3.4. Migrations & superuser
+```bash
+# appliquer les migrations
+python manage.py makemigrations
+python manage.py migrate
 
-### 3.5. App commandes
+# créer un superuser admin
+python manage.py createsuperuser
+```
+### 3.5. Lancer le serveur backend
+```bash
+python manage.py runserver
+```
 
--   Gestion des statuts de commandes
--   Client :
-    -   GET /api/commandes/mes-commandes/
-    -   POST /api/commandes/`<id>`{=html}/annuler/
-    -   POST /api/commandes/`<id>`{=html}/confirmer-reception/
--   Cuisinier :
-    -   PATCH /api/commandes/`<id>`{=html}/changer-statut/
+Le backend écoute par défaut sur :
 
-### 3.6. Avis
+http://127.0.0.1:8000
 
--   Note 1 à 5
--   Un seul avis par client et par plat
--   Endpoints :
-    -   POST /api/avis/laisser-avis/
-    -   GET /api/avis/mon-avis/
-    -   GET /api/avis/avis-par-plat/
-    -   GET /api/avis/avis-cuisinier/
+## 4. Lancer le frontend (Next.js)
+### 4.1. Prérequis
 
-### 3.7. Réclamations
+Node.js >= 18
 
--   Une seule réclamation par commande et plat
--   Endpoints :
-    -   POST /api/reclamations/creer/
-    -   GET /api/reclamations/mes-reclamations/
-    -   GET /api/reclamations/cuisinier/
-    -   POST /api/reclamations/`<uuid>`{=html}/changer-statut/
+npm ou yarn
 
-## 4. Frontend -- Next.js
+### 4.2. Installation
 
-### 4.1. Technologies
+Depuis le dossier wakelni-frontend :
+```bash
+cd wakelni-frontend
 
--   Next.js
--   React
--   TypeScript
+# Installer les dépendances
+npm install
+# ou
+# yarn
+```
+### 4.3. Variables d’environnement frontend
 
-### 4.2. Client HTTP (lib/api.ts)
+Créer un fichier .env.local dans wakelni-frontend :
+```env
+# URL de l’API Django
+NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
 
--   Gestion du token JWT
--   Gestion automatique des erreurs 401
+# Clé publique Stripe (si utilisée côté frontend)
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_xxx
+```
 
-### 4.3. Pages Client
+### 4.4. Lancer le serveur frontend
+```bash
+npm run dev
+# ou
+# yarn dev
+```
 
--   Plats
--   Panier
--   Commandes
--   Réclamations
--   Profil
--   Contact
+Le frontend écoute par défaut sur :
 
-### 4.4. Pages Cuisinier
+http://localhost:3000
 
--   Gestion des plats
--   Commandes
--   Réclamations
--   Avis
+## 5. Fonctionnement côté CLIENT
+### 5.1. Authentification
 
-## 5. Base de Données (PostgreSQL - Neon)
+1. Le client se connecte via la page /login.
+2. Le frontend envoie une requête vers l’API Django (ex. /api/users/login/).
+3. Le backend renvoie :
+    - access (JWT)
+    - refresh (JWT)
+    - infos utilisateur (nom, rôle, email…)
 
-Tables principales : - users_user - plats_plat - paniers_panier -
-commandes_commande - commandes_lignecommande - avis_avis -
-reclamations_reclamation
+Le frontend stocke accessToken + infos dans localStorage.
+Toutes les requêtes suivantes passent par lib/api.ts, qui ajoute le header :
+```http
+Authorization: Bearer <accessToken>
+```
+### 5.2. Parcours principal client
 
-## 6. Communication Backend ↔ Frontend
+- Accueil client : /client
+    - Liste des plats disponibles (GET /api/plats/)
+    - Ajout au panier (POST /api/paniers/ajouter/)
 
--   API REST sécurisée par JWT
--   Authorization: Bearer `<token>`{=html}
--   Gestion automatique de la session côté frontend
+- Panier : /client/panier
+    - Consultation panier (GET /api/paniers/…)
+    - Paiement Stripe : appel à un endpoint backend qui crée une Session Stripe, puis redirection.
+
+- Commandes : /client/commandes
+    - Liste des commandes (GET /api/commandes/mes-commandes/)
+    - Confirmation de réception / annulation via POST sur des endpoints dédiés.
+
+- Avis sur les plats :
+    - Modal depuis la page /client sur un plat :
+        - GET /api/avis/avis-par-plat/?plat_id=... → liste des avis
+        - GET /api/avis/mon-avis/?plat_id=... → avis du client connecté
+        - POST /api/avis/laisser-avis/ → création / mise à jour de l’avis
+(seulement si le client a déjà commandé ce plat)
+
+- Réclamations :
+    - Page /client/reclamations
+        - GET /api/reclamations/mes-reclamations/ → historique des réclamations
+        - POST /api/reclamations/creer/
+            - Body : commande_id, motif, description
+            - Unicité : une seule réclamation par client / commande / plat
+
+## 6. Fonctionnement côté CUISINIER
+### 6.1. Dashboard cuisinier : /cuisinier
+
+Fonctionnalités (selon ce qui a été implémenté) :
+- voir ses plats (GET /api/plats/mes-plats/)
+- ajouter un plat (POST /api/plats/ via formulaire /cuisinier/plat-nouveau)
+
+### 6.2. Commandes : /cuisinier/commandes
+
+- GET /api/commandes/mes-commandes/
+(Commandes associées à ce cuisinier)
+- Changer le statut d’une commande :
+    - PATCH /api/commandes/<id>/changer-statut/
+    - Statuts possibles : EN_ATTENTE, EN_PREPARATION, PRET, REMIS, COMPLETEE, ANNULEE
+
+### 6.3. Avis reçus : /cuisinier/avis
+
+- GET /api/avis/avis-cuisinier/
+Liste des avis sur les plats de ce cuisinier :
+email client, nom client, plat, note, commentaire, date.
+
+### 6.4. Réclamations reçues : /cuisinier/reclamations
+
+- GET /api/reclamations/cuisinier/
+Récupère les réclamations où cuisinier == request.user.
+- Mise à jour du statut d’une réclamation :
+    - POST /api/reclamations/<uuid:pk>/changer-statut/
+    - Body :
+```json
+{ "statut": "LU" | "EN_COURS" | "TRAITEE" | "REJETEE" | "OUVERT" }
+```
+## 7. API – Récapitulatif des endpoints principaux
+
+⚠️ Les préfixes exacts peuvent varier, adapter selon ton urls.py.
+
+- Auth / Users
+    - POST /api/users/register/
+    - POST /api/users/login/
+
+- Plats
+    - GET /api/plats/
+    - POST /api/plats/ (cuisinier)
+
+- Panier / Paiement
+    - POST /api/paniers/ajouter/
+    - GET /api/paniers/…
+    - POST /api/paiement/… (Stripe Checkout, selon ton implémentation)
+
+- Commandes
+    - GET /api/commandes/mes-commandes/
+    - POST /api/commandes/<id>/annuler/
+    - POST /api/commandes/<id>/confirmer-reception/
+    - PATCH /api/commandes/<id>/changer-statut/ (cuisinier)
+
+- Avis
+    - GET /api/avis/avis-par-plat/?plat_id=...
+    - GET /api/avis/mon-avis/?plat_id=...
+    - POST /api/avis/laisser-avis/
+    - GET /api/avis/avis-cuisinier/ (cuisinier)
+
+- Réclamations
+    - GET /api/reclamations/mes-reclamations/ (client)
+    - POST /api/reclamations/creer/ (client)
+    - GET /api/reclamations/cuisinier/ (cuisinier)
+    - POST /api/reclamations/<uuid:pk>/changer-statut/ (cuisinier)
+
+## 8. Lancer l’application – Récapitulatif
+
+1. Backend
+```bash
+cd wakelni-backend
+python -m venv venv
+venv\Scripts\activate   # ou source venv/bin/activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
+```
+
+2. Frontend
+```bash
+cd wakelni-frontend
+npm install
+# vérifier que NEXT_PUBLIC_API_URL pointe vers le backend
+npm run dev
+```
+
+3. Aller sur :
+➜ http://localhost:3000
+
+## 9. Notes pour le rapport / démo
+
+- Séparation claire des responsabilités :
+    - Django = API + logique métier + base de données.
+    - Next.js = interface utilisateur, composant React, appels API.
+
+- Sécurité :
+    - JWT pour l’authentification.
+    - Rôles : CLIENT / CUISINIER.
+    - Vérification côté backend avant de :
+        - laisser un avis (commande obligatoire)
+        - créer une réclamation (commande du client)
+        - voir les réclamations / avis (cuisinier seulement pour les siens).
+
+- Extensibilité :
+    - Ajout possible : historique des paiements, factures PDF, notifications, etc.
+
