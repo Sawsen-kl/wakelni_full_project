@@ -6,6 +6,16 @@ import { apiPost } from "../../../../lib/api";
 
 type Status = "loading" | "ok" | "error";
 
+// ✅ Type pour les infos de facture renvoyées par l'API
+type InvoiceData = {
+  commande_id: number;
+  montant: string;
+  date: string;
+  statut: string;
+  type: string;
+  transaction_ref: string;
+};
+
 export default function PaymentSuccessPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -13,6 +23,21 @@ export default function PaymentSuccessPage() {
   const [status, setStatus] = useState<Status>("loading");
   const [message, setMessage] = useState("");
   const [sessionId, setSessionId] = useState<string | null>(null);
+
+  // ✅ nouvelle state pour la "facture"
+  const [invoice, setInvoice] = useState<InvoiceData | null>(null);
+
+  function formatDate(dateIso: string) {
+    if (!dateIso) return "";
+    const d = new Date(dateIso);
+    return d.toLocaleString("fr-CA", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
 
   useEffect(() => {
     const raw = searchParams.get("session_id");
@@ -27,9 +52,12 @@ export default function PaymentSuccessPage() {
     setSessionId(cleaned);
 
     apiPost("/api/paiements/confirm/", { session_id: cleaned })
-      .then(() => {
+      .then((data) => {
+        // data contient maintenant :
+        // detail, commande_id, montant, date, statut, type, transaction_ref
         setStatus("ok");
         setMessage("Votre commande est en cours de préparation.");
+        setInvoice(data as InvoiceData); // 👈 on garde les infos pour la facture
       })
       .catch((err: any) => {
         console.error(err);
@@ -125,8 +153,48 @@ export default function PaymentSuccessPage() {
                 Vous recevrez vos plats très bientôt. Merci d&apos;avoir choisi
                 Wakelni 💛
               </p>
+
+              {/* 🔹 Affichage "facture" / résumé du paiement */}
+              {invoice && (
+                <div
+                  className="facture-box"
+                  style={{
+                    marginTop: 24,
+                    padding: 16,
+                    borderRadius: 12,
+                    border: "1px solid #ddd",
+                    backgroundColor: "#fafafa",
+                  }}
+                >
+                  <h3 style={{ marginTop: 0, marginBottom: 12 }}>
+                    Résumé de votre paiement
+                  </h3>
+                  <p>
+                    <strong>Commande :</strong> #{invoice.commande_id}
+                  </p>
+                  <p>
+                    <strong>Montant :</strong> {invoice.montant} $
+                  </p>
+                  <p>
+                    <strong>Date :</strong> {formatDate(invoice.date)}
+                  </p>
+                  <p>
+                    <strong>Statut du paiement :</strong> {invoice.statut}
+                  </p>
+                  <p>
+                    <strong>Mode de paiement :</strong> {invoice.type}
+                  </p>
+                  {invoice.transaction_ref && (
+                    <p style={{ fontSize: "0.9rem", color: "#666" }}>
+                      <strong>Référence de transaction :</strong>{" "}
+                      {invoice.transaction_ref}
+                    </p>
+                  )}
+                </div>
+              )}
+
               {sessionId && (
-                <p style={{ fontSize: "0.85rem", color: "#666" }}>
+                <p style={{ fontSize: "0.85rem", color: "#666", marginTop: 16 }}>
                   ID de session Stripe (test) : {sessionId}
                 </p>
               )}
@@ -138,7 +206,7 @@ export default function PaymentSuccessPage() {
               <p style={{ color: "#b00020", marginBottom: 12 }}>{message}</p>
               <p style={{ fontSize: "0.9rem", color: "#555" }}>
                 Vérifiez dans votre relevé bancaire si le paiement a bien été
-                débité. Si ce n’est pas le cas, vous pouvez retourner à vos
+                débité. Si ce n'est pas le cas, vous pouvez retourner à vos
                 plats et réessayer le paiement.
               </p>
             </>
